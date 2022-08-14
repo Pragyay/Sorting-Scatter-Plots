@@ -5,27 +5,27 @@ let canvas = document.getElementById('canvas'),
 
 let btn = document.getElementById('btn');
 let a = [];
-
+let no_of_iterations = width;
     // add elements to array
 function generateArray(){
-    for(let i=0;i<height;i++){
+    for(let i=0;i<no_of_iterations;i+=2){
         a.push({
-            x: (-1)*Math.random()*width,
-            y: i,
+            x: i,
+            y: Math.random()*height,
             color: "white"
         })
     }
 }
 
-function displayElements(){
-    context.clearRect(0,0,-width,height);
+function displayElements(j){
+    context.clearRect(0,0,width,height);
 
     for(let i=0;i<a.length-1;i++){
         let ele = a[i];
         // console.log(ele.x, ele.y);
 
         context.beginPath();
-        context.arc(ele.x,ele.y,1,0,Math.PI*2);
+        context.arc(ele.x,ele.y,2,0,Math.PI*2);
         context.fillStyle = ele.color;
         context.fill();
         // context.moveTo(ele.x,ele.y);
@@ -33,30 +33,41 @@ function displayElements(){
         // context.strokeStyle = ele.color;
         // context.stroke();
     }
+    context.beginPath();
+    context.moveTo(a[j].x,0);
+    context.lineTo(a[j].x,height);
+    context.strokeStyle = "white";
+    context.lineWidth = 1;
+    context.stroke();
 }
 
 function bubbleSort(arr, j){
            
     // let j;
     // for(j=0;j<a.length-i-1;j++){
-        arr[j].color = "green";
-        arr[j+1].color = "green";
-        if(arr[j].y > arr[j+1].y){
+        arr[j].color = "black";
+        arr[j+1].color = "black";
+        if(arr[j].x > arr[j+1].x){
+            console.log(arr[j].x, arr[j+1].x);
+
+            let temp_x = arr[j].x
+            arr[j].x = arr[j + 1].x
+            arr[j+1].x = temp_x;
             
-            let temp = arr[j].y
-            arr[j].y = arr[j + 1].y
-            arr[j+1].y = temp
+            console.log(arr[j].x, arr[j+1].x);
+            // let temp_y = arr[j].y
+            // arr[j].y = arr[j + 1].y
+            // arr[j+1].y= temp_y;
         }
     // }   
-    // arr[j].x = (-1)*arr[j].y*2;
-    // return arr;
+    
 }
 let i=0;
 let j=0;
 
-let k = 0;
-
+// flipping canvas
 context.translate(width,0);
+context.scale(-1,1);
 
 generateArray();
 // let a = arr
@@ -65,7 +76,8 @@ generateArray();
 //   .map(({ value }) => value)
 // console.log(a);
 
-update();
+// update();
+console.log(a.length);
 
 // function update(){
     
@@ -82,29 +94,40 @@ update();
 // }
 
 function update(){
-    
+
     for(let x=0;x<10;x++){
-        if(i<height){
+        if(i<(no_of_iterations)/2 + 10){
             if(j<a.length-i-1){
-                bubbleSort(a, j);
-                displayElements();  
-                a[j].color = "white";
-                a[j+1].color = "white";
+                // a[j].color = "black";
+                // a[j+1].color = "black";
+                // console.log(a[j].y > a[j+1].y);
+                if(a[j].y > a[j+1].y){
+                    // console.log(a[j].x, a[j+1].x);
+                
+                    let temp_y = a[j].y
+                    a[j].y = a[j + 1].y
+                    a[j+1].y = temp_y;
+            
+                    // console.log(a[j].x, a[j+1].x);
+                }
+                // a[j].color = "white";
+                // a[j+1].color = "white";
                 j+=1;
             }else{
-                a[j].x = (-1)*a[j].y*2;
+                a[j].y = a[j].x/2;
                 a[j].color = "red";
                 j=0;
                 i+=1;
             }
         }
-        //else{
-        //     a[k].color = "white";
-        //     k+=1;
-        // }
+
     }
     
-    console.log(i,j);
+    
+    displayElements(j);  
+
+    // console.log(i,j);
+    
     requestAnimationFrame(update);
 }
 
